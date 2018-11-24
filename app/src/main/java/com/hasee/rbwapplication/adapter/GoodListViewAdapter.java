@@ -56,7 +56,7 @@ public class GoodListViewAdapter extends BaseAdapter {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        if(position%2 !=0){
+        if(position%2 ==0){
             viewHolder.itemLayout.setBackgroundResource(R.color.oddNumber_bg);
         }else{
             viewHolder.itemLayout.setBackgroundResource(R.color.evenNumber_bg);
@@ -73,4 +73,23 @@ public class GoodListViewAdapter extends BaseAdapter {
         TextView xiangShuTv;//箱数
         TextView jianShuTv;//件数
     }
+
+    /**
+     * 更新子项
+     * @param view
+     * @param itemIndex
+     */
+    public void updateView(View view, int itemIndex) {
+        if(view == null){
+            return ;
+        }
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        viewHolder.barCodeTv = (TextView)view.findViewById(R.id.good_listView_item_barCode_tv);
+        viewHolder.barCodeTv.setText(goodInfoList.get(itemIndex).getBarCode());
+        viewHolder.xiangShuTv = (TextView)view.findViewById(R.id.good_listView_item_xiangShu_tv);
+        viewHolder.xiangShuTv.setText(goodInfoList.get(itemIndex).getXiangShu());
+        viewHolder.jianShuTv = (TextView)view.findViewById(R.id.good_listView_item_jianShu_tv);
+        viewHolder.jianShuTv.setText(goodInfoList.get(itemIndex).getJianShu());
+    }
+
 }

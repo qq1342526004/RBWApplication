@@ -35,6 +35,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_layout);
         userNameEt = (EditText)findViewById(R.id.loginLayout_userName_et);
         passWordEt = (EditText)findViewById(R.id.loginLayout_passWord_et);
+
+        userNameEt.setText("123");
+        passWordEt.setText("1");
+
         ipAddressEt = (EditText)findViewById(R.id.loginLayout_ipAddress_et);
         ipAddressEt.setText(App.getInstance().getPreferences().trim());
         loginButton = (Button)findViewById(R.id.loginLayout_login_button);
@@ -51,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
                 case R.id.loginLayout_login_button:
                     if(isEmpty()){
                         customProgress = CustomProgress.show(LoginActivity.this,
-                                getResources().getString(R.string.loading),true,null);
+                                getResources().getString(R.string.loading),false,null);
                         String userName = userNameEt.getText().toString().trim();
                         String passWord = passWordEt.getText().toString().trim();
                         String ipAddress = ipAddressEt.getText().toString().trim();
@@ -87,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            customProgress.dismiss();
             ResponseInfo response = (ResponseInfo) msg.obj;
             switch (msg.what){
                 case MyThread.RESPONSE_FAILED://失败

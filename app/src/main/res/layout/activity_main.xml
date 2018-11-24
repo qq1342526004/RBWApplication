@@ -65,24 +65,29 @@
         <LinearLayout
             android:id="@+id/tableHead_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/table_bg"
+            android:minHeight="40dp">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/tv_barCode"
+                android:textColor="@color/bg_white"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/tv_xiangShu"
+                android:textColor="@color/bg_white"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/tv_jianShu"
+                android:textColor="@color/bg_white"
                 android:gravity="center"/>
         </LinearLayout>
         <LinearLayout

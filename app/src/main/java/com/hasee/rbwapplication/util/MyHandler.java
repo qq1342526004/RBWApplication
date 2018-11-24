@@ -27,11 +27,11 @@ public class MyHandler extends Handler {
                 break;
             }
             case MyThread.CONNECT_FAILED: {
-                Toast.makeText(mContext, R.string.response_error, Toast.LENGTH_LONG).show();
+                ToastUtil.getInstance(mContext).showShortToast(mContext.getResources().getString(R.string.response_error));
                 break;
             }
             default:
-                Toast.makeText(mContext, response.getMessage(), Toast.LENGTH_LONG).show();
+                ToastUtil.getInstance(mContext).showShortToast(response.getMessage());
         }
     }
 }

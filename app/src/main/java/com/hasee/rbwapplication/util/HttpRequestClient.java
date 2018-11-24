@@ -17,9 +17,9 @@ import cz.msebera.android.httpclient.util.EntityUtils;
  */
 public class HttpRequestClient {
     /*服务器默认信息*/
-    private static String ipAddress = "";
-    private static String port = "";
-    private static String projectName = "";
+    private static String ipAddress = "192.168.1.126";
+    private static String port = "8080";
+    private static String projectName = "RuiBangWuLiu";
     private static String baseUrl = "http://"+ipAddress+":"+port+"/"+projectName+"/";
     //HttpClient实例
     private static HttpClient client = null;

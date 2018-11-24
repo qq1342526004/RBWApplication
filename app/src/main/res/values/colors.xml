@@ -4,8 +4,12 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="bg_blue">#327ac9</color>
+    <color name="table_bg">#194d5b</color>
     <color name="bg_white">#ffffff</color>
-    <color name="oddNumber_bg">#B8CCE4</color>
-    <color name="evenNumber_bg">#DCE6F1</color>
+    <color name="bg_red">#f00</color>
+    <color name="oddNumber_bg">#96c4e6</color>
+    <color name="evenNumber_bg">#c7e1f0</color>
     <color name="toolBar_bg">#327ac9</color>
+    <color name="tabelRow_preview">#EAEAEA</color>
+    <color name="et_bg">#D1D1D1</color>
 </resources>

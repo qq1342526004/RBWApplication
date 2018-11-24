@@ -1,6 +1,7 @@
 package com.hasee.rbwapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,7 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MyListener{
+public class MainActivity extends AppCompatActivity implements MyListener {
     private static final String TAG = "MainActivity";
     private Context mContext;//MainActivity上下文
     private TextView saveButton;//保存按钮
@@ -39,19 +40,20 @@ public class MainActivity extends AppCompatActivity implements MyListener{
     private GoodListViewAdapter goodListViewAdapter;//商品ListView适配器
     private InputDialog inputDialog;//输入Dialog
     private UpdateDialog updateDialog;//修改Dialog
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = getApplicationContext();
-        editText = (EditText)findViewById(R.id.mainactivity_et);
+        mContext = MainActivity.this;
+        editText = (EditText) findViewById(R.id.mainactivity_et);
         editText.setOnEditorActionListener(onEditorActionListener);
-        saveButton = (TextView)findViewById(R.id.mainactivity_save_button);
+        saveButton = (TextView) findViewById(R.id.mainactivity_save_button);
         saveButton.setOnClickListener(onClickListener);
-        chayibiaoButton = (TextView)findViewById(R.id.mainactivity_chayibiao_button);
+        chayibiaoButton = (TextView) findViewById(R.id.mainactivity_chayibiao_button);
         chayibiaoButton.setOnClickListener(onClickListener);
-        listView = (ListView)findViewById(R.id.mainactivity_listView);
-        goodListViewAdapter = new GoodListViewAdapter(MainActivity.this,goodInfoList);
+        listView = (ListView) findViewById(R.id.mainactivity_listView);
+        goodListViewAdapter = new GoodListViewAdapter(MainActivity.this, goodInfoList);
         listView.setAdapter(goodListViewAdapter);
         listView.setOnItemClickListener(onItemClickListener);
     }
@@ -62,25 +64,25 @@ public class MainActivity extends AppCompatActivity implements MyListener{
     public View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.mainactivity_save_button://保存按钮
-                    if(goodInfoList.size() > 0){
+                    if (goodInfoList.size() > 0) {
                         JSONArray jsonArray = new JSONArray();
-                        String action = "action.do";
                         for (int i = 0; i < goodInfoList.size(); i++) {
                             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(goodInfoList.get(i));
                             jsonArray.add(jsonObject);
                         }
-                        HandlerData.send(handler,jsonArray);
-//                        LogUtil.d(TAG,jsonArray.toString());
-//                        new MyThread(handler, HandlerData.send(jsonArray), action).start();
+                        HandlerData.send(handler, jsonArray);
                     }
                     break;
                 case R.id.mainactivity_chayibiao_button://差异表按钮
+                    Intent intent = new Intent(MainActivity.this, DifferenceActivity.class);
+                    startActivity(intent);
                     break;
             }
         }
     };
+
     /**
      * ListView点击事件监听器
      */
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("Gooditem", goodInfoList.get(position));
+            bundle.putInt("currentPosition",position);
             updateDialog = new UpdateDialog();
             updateDialog.setArguments(bundle);
             updateDialog.show(getSupportFragmentManager(), "update_dialog");
@@ -103,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                 String barCodeTxt = editText.getText().toString().trim();
-                if(!TextUtils.isEmpty(barCodeTxt)){
+                if (!TextUtils.isEmpty(barCodeTxt)) {
                     Bundle bundle = new Bundle();
-                    bundle.putString("barCodeTxt",barCodeTxt);
+                    bundle.putString("barCodeTxt", barCodeTxt);
                     inputDialog = new InputDialog();
                     inputDialog.setCancelable(false);
                     inputDialog.setArguments(bundle);
@@ -121,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MyListener{
     @Override
     public void sendMessage(String message) {
         JSONArray jsonArray = JSONArray.parseArray(message);
-        switch (jsonArray.getIntValue(0)){
+        switch (jsonArray.getIntValue(0)) {
             case 0: {//返回
                 if (inputDialog != null && inputDialog.isVisible()) {
                     inputDialog.dismiss();
@@ -142,23 +145,48 @@ public class MainActivity extends AppCompatActivity implements MyListener{
                 break;
             }
             case 2: {//修改
-                LogUtil.d(TAG,jsonArray.getJSONObject(1).toString());
-                new MyThread(handler, jsonArray.getJSONObject(1), "action.do").start();
+                GoodInfo goodInfo = JSONObject.parseObject(jsonArray.getJSONObject(1).toJSONString(),
+                        GoodInfo.class);
+                int currentPosition = jsonArray.getInteger(2);
+                goodInfoList.set(currentPosition,goodInfo);
+                updateItemView(currentPosition);
                 updateDialog.dismiss();
                 break;
             }
         }
     }
 
+    public void updateItemView(int itemIndex){
+        //得到第一个可显示控件的位置
+        int visiblePosition = listView.getFirstVisiblePosition();
+        //只有当要更新的view在可见的位置时才更新，不可见时，跳过不更新
+        if (itemIndex - visiblePosition >= 0) {
+            //得到要更新的item的view
+            View view = listView.getChildAt(itemIndex - visiblePosition);
+            //调用adapter更新界面
+            goodListViewAdapter.updateView(view, itemIndex);
+        }
+    }
+
     /**
      * 处理服务器返回的数据
      */
-    public MyHandler handler = new MyHandler(mContext){
+    public MyHandler handler = new MyHandler(MainActivity.this) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-
+            switch (msg.what) {
+                case MyThread.RESPONSE_SUCCESS: {//操作成功
+                    goodInfoList.clear();
+                    goodListViewAdapter.notifyDataSetChanged();
+                    ToastUtil.getInstance(MainActivity.this).showShortToast(
+                            getResources().getString(R.string.handle_success));
+                    break;
+                }
+                case MyThread.RESPONSE_FAILED:{//操作失败
+                    ToastUtil.getInstance(MainActivity.this).showShortToast(
+                            getResources().getString(R.string.handle_failed));
+                }
             }
         }
     };

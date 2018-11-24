@@ -41,15 +41,21 @@ public class HandlerData {
     }
 
     /**
-     * 查询数据
-     * @return
+     * 查询所有数据
      */
-    public static JSONObject queryData(){
+    public static void queryAll(MyHandler handler){
         JSONObject jsonObject = new JSONObject();//发送给服务器的数据
         jsonObject.put("module", "test");
         jsonObject.put("operation", "query");
         jsonObject.put("type", "app");
-        return jsonObject;
+        new MyThread(handler,jsonObject,action).start();
+    }
+
+    /**
+     * 根据条件查询
+     */
+    public static void querySingle(MyHandler handler){
+
     }
 
     /**

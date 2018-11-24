@@ -7,10 +7,13 @@
     <string name="tv_jianShu">件数</string>
     <string name="inputDialog_title">输入数据</string>
     <string name="updateDialog_title">修改数据</string>
-    <string name="dialog_submit">确定</string>
+    <string name="button_submit">确定</string>
+    <string name="tv_select">查询条件</string>
 
     <!---->
     <string name="response_error">网络连接出错!</string>
     <string name="loading">加载中...</string>
     <string name="login_isEmpty">用户名或密码或IP不能为空</string>
+    <string name="handle_success">操作成功</string>
+    <string name="handle_failed">操作失败</string>
 </resources>

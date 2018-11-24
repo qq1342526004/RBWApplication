@@ -25,6 +25,7 @@ public class UpdateDialog extends DialogFragment {
     private MyListener listener;
     private JSONArray jsonArray;
     private GoodInfo preGoodInfo;
+    private int currentPosition;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -37,6 +38,7 @@ public class UpdateDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.updatedialog_layout,container,false);
         savedInstanceState = this.getArguments();
         preGoodInfo = (GoodInfo) savedInstanceState.getSerializable("Gooditem");
+        currentPosition = savedInstanceState.getInt("currentPosition");
         barCodeEt = (EditText)view.findViewById(R.id.updateDialog_barCode_et);
         xiangShuEt = (EditText)view.findViewById(R.id.updateDialog_xiangShu_et);
         jianShuEt = (EditText)view.findViewById(R.id.updateDialog_jianShu_et);
@@ -45,11 +47,14 @@ public class UpdateDialog extends DialogFragment {
         submitTextView = (TextView)view.findViewById(R.id.updateDialog_submit_tv);
         submitTextView.setOnClickListener(onClickListener);
         barCodeEt.setText(preGoodInfo.getBarCode());
-        xiangShuEt.setHint(preGoodInfo.getXiangShu());
-        jianShuEt.setHint(preGoodInfo.getJianShu());
+        xiangShuEt.setText(preGoodInfo.getXiangShu());
+        jianShuEt.setText(preGoodInfo.getJianShu());
         return view;
     }
 
+    /**
+     * 点击事件监听
+     */
     public View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -61,16 +66,14 @@ public class UpdateDialog extends DialogFragment {
                     break;
                 case R.id.updateDialog_submit_tv:
                     if(isEmpty()){//输入框不为空
-                        JSONArray itemJSONArray = new JSONArray();
                         JSONObject itemObject = new JSONObject();//修改后的数据（set）
                         itemObject.put("barCode", barCodeEt.getText().toString().trim());
                         itemObject.put("xiangShu", xiangShuEt.getText().toString().trim());
                         itemObject.put("jianShu", jianShuEt.getText().toString().trim());
-                        itemJSONArray.add(itemObject);//修改后的数据
-                        itemJSONArray.add(JSONObject.toJSON(preGoodInfo));//原有的数据
                         jsonArray = new JSONArray();
                         jsonArray.add(2);
-                        jsonArray.add(HandlerData.updateData(itemJSONArray));
+                        jsonArray.add(itemObject);
+                        jsonArray.add(currentPosition);
                         listener.sendMessage(jsonArray.toString());
                     }
                     break;
@@ -78,8 +81,12 @@ public class UpdateDialog extends DialogFragment {
         }
     };
 
+    /**
+     * 判断是否输入框是否为空
+     * @return
+     */
     private boolean isEmpty(){
-        if("".equalsIgnoreCase(barCodeEt.getText().toString().trim())
+        if("".equalsIgnoreCase(jianShuEt.getText().toString().trim())
                 ||"".equalsIgnoreCase(xiangShuEt.getText().toString().trim())){
             return false;
         }
