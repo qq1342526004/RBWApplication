@@ -52,10 +52,15 @@ public class HandlerData {
     }
 
     /**
-     * 根据条件查询
+     * 查询单个 数据
      */
-    public static void querySingle(MyHandler handler){
-
+    public static void querySingle(MyHandler handler, JSONObject itemObject){
+        JSONObject jsonObject = new JSONObject();//发送给服务器的数据
+        jsonObject.put("module", "test");
+        jsonObject.put("operation", "bartest");
+        jsonObject.put("type", "app");
+        jsonObject.put("rely",itemObject);
+        new MyThread(handler,jsonObject,action).start();
     }
 
     /**

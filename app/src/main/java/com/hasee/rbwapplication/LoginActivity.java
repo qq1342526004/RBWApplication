@@ -1,5 +1,6 @@
 package com.hasee.rbwapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -21,8 +22,9 @@ import com.hasee.rbwapplication.util.ToastUtil;
 /**
  * Created by fangju on 2018/11/23
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
+    private Context mContext;
     private EditText userNameEt;//用户名输入库
     private EditText passWordEt;//密码输入框
     private EditText ipAddressEt;//ip输入框
@@ -33,9 +35,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
+        mContext = getApplicationContext();
         userNameEt = (EditText)findViewById(R.id.loginLayout_userName_et);
         passWordEt = (EditText)findViewById(R.id.loginLayout_passWord_et);
-
+        //默认账号
         userNameEt.setText("123");
         passWordEt.setText("1");
 
@@ -59,12 +62,10 @@ public class LoginActivity extends AppCompatActivity {
                         String userName = userNameEt.getText().toString().trim();
                         String passWord = passWordEt.getText().toString().trim();
                         String ipAddress = ipAddressEt.getText().toString().trim();
-                        String action = "action.do";
                         HttpRequestClient.refresh(ipAddress);//更新ip地址
                         HandlerData.login(handler,userName,passWord);
-//                        new MyThread(handler,login(userName,passWord),action).start();
                     }else{
-                        ToastUtil.getInstance(LoginActivity.this).showShortToast(getResources().getString(R.string.login_isEmpty));
+                        ToastUtil.getInstance(mContext).showShortToast(getResources().getString(R.string.login_isEmpty));
                     }
                     break;
             }
@@ -95,11 +96,11 @@ public class LoginActivity extends AppCompatActivity {
             ResponseInfo response = (ResponseInfo) msg.obj;
             switch (msg.what){
                 case MyThread.RESPONSE_FAILED://失败
-                    ToastUtil.getInstance(LoginActivity.this).
+                    ToastUtil.getInstance(mContext).
                             showShortToast(response.getMessage());
                     break;
                 case MyThread.RESPONSE_SUCCESS://登陆成功
-                    ToastUtil.getInstance(LoginActivity.this).
+                    ToastUtil.getInstance(mContext).
                             showShortToast(response.getMessage());
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                     startActivity(intent);

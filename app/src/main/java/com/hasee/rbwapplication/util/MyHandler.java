@@ -26,6 +26,9 @@ public class MyHandler extends Handler {
             case MyThread.RESPONSE_SUCCESS: {
                 break;
             }
+            case MyThread.RESPONSE_FAILED:{
+                break;
+            }
             case MyThread.CONNECT_FAILED: {
                 ToastUtil.getInstance(mContext).showShortToast(mContext.getResources().getString(R.string.response_error));
                 break;

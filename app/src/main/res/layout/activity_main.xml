@@ -2,98 +2,117 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:id="@+id/mainactivity_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/bg_blue">
+        android:background="@color/bg_blue"
+        android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_barCode"
                 android:gravity="center"
-                android:textColor="@color/bg_white"/>
+                android:text="@string/tv_barCode"
+                android:textColor="@color/bg_white" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:gravity="center">
+            android:gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false">
+
             <EditText
                 android:id="@+id/mainactivity_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:textCursorDrawable="@drawable/cursor_style" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center">
+
             <TextView
                 android:id="@+id/mainactivity_save_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tvbutton_save"
                 android:gravity="center"
-                android:textColor="@color/bg_white"/>
+                android:text="@string/tvbutton_save"
+                android:textColor="@color/bg_white" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center">
+
             <TextView
                 android:id="@+id/mainactivity_chayibiao_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvbutton_chayibiao"
-                android:textColor="@color/bg_white"/>
+                android:textColor="@color/bg_white" />
         </LinearLayout>
     </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/mainactivity_table_layout"
-        android:layout_below="@id/mainactivity_title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mainactivity_title_layout">
+
         <LinearLayout
             android:id="@+id/tableHead_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/table_bg"
             android:minHeight="40dp">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="@string/tv_barCode"
-                android:textColor="@color/bg_white"
-                android:gravity="center"/>
+                android:textColor="@color/bg_white" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="@string/tv_xiangShu"
-                android:textColor="@color/bg_white"
-                android:gravity="center"/>
+                android:textColor="@color/bg_white" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="@string/tv_jianShu"
-                android:textColor="@color/bg_white"
-                android:gravity="center"/>
+                android:textColor="@color/bg_white" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_below="@id/tableHead_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tableHead_layout">
+
             <ListView
                 android:id="@+id/mainactivity_listView"
                 android:layout_width="match_parent"

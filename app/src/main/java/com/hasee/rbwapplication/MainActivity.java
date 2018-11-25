@@ -17,21 +17,22 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hasee.rbwapplication.adapter.GoodListViewAdapter;
 import com.hasee.rbwapplication.bean.GoodInfo;
+import com.hasee.rbwapplication.bean.ResponseInfo;
 import com.hasee.rbwapplication.dialog.InputDialog;
 import com.hasee.rbwapplication.dialog.UpdateDialog;
+import com.hasee.rbwapplication.util.ActivityCollector;
 import com.hasee.rbwapplication.util.HandlerData;
 import com.hasee.rbwapplication.util.LogUtil;
 import com.hasee.rbwapplication.util.MyHandler;
 import com.hasee.rbwapplication.util.MyThread;
 import com.hasee.rbwapplication.util.ToastUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MyListener {
+public class MainActivity extends BaseActivity implements MyListener {
     private static final String TAG = "MainActivity";
-    private Context mContext;//MainActivity上下文
+    private Context mContext;//上下文
     private TextView saveButton;//保存按钮
     private TextView chayibiaoButton;//差异表按钮
     private EditText editText;//输入框
@@ -40,12 +41,13 @@ public class MainActivity extends AppCompatActivity implements MyListener {
     private GoodListViewAdapter goodListViewAdapter;//商品ListView适配器
     private InputDialog inputDialog;//输入Dialog
     private UpdateDialog updateDialog;//修改Dialog
+    private String barCodeTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = MainActivity.this;
+        mContext = getApplicationContext();
         editText = (EditText) findViewById(R.id.mainactivity_et);
         editText.setOnEditorActionListener(onEditorActionListener);
         saveButton = (TextView) findViewById(R.id.mainactivity_save_button);
@@ -56,6 +58,15 @@ public class MainActivity extends AppCompatActivity implements MyListener {
         goodListViewAdapter = new GoodListViewAdapter(MainActivity.this, goodInfoList);
         listView.setAdapter(goodListViewAdapter);
         listView.setOnItemClickListener(onItemClickListener);
+    }
+
+    /**
+     * 返回键监听
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ActivityCollector.finshAll();
     }
 
     /**
@@ -105,22 +116,23 @@ public class MainActivity extends AppCompatActivity implements MyListener {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                String barCodeTxt = editText.getText().toString().trim();
-                if (!TextUtils.isEmpty(barCodeTxt)) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("barCodeTxt", barCodeTxt);
-                    inputDialog = new InputDialog();
-                    inputDialog.setCancelable(false);
-                    inputDialog.setArguments(bundle);
-                    inputDialog.show(getSupportFragmentManager(), "input_dialog");
-//                ToastUtil.getInstance(mContext).showShortToast(barCodeTxt);
-                    editText.setText("");
+                barCodeTxt = editText.getText().toString().trim();
+                if(!TextUtils.isEmpty(barCodeTxt)){
+                    JSONObject itemObject = new JSONObject();
+                    if(!TextUtils.isEmpty(barCodeTxt)){
+                        itemObject.put("barCode",barCodeTxt);
+                    }
+                    HandlerData.querySingle(handler,itemObject);
                 }
             }
             return false;
         }
     };
 
+    /**
+     * 接收DialogFragment发送的数据
+     * @param message
+     */
     @Override
     public void sendMessage(String message) {
         JSONArray jsonArray = JSONArray.parseArray(message);
@@ -134,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements MyListener {
                     updateDialog.dismiss();
                     updateDialog = null;
                 }
+                editText.requestFocus();
+                editText.findFocus();
                 break;
             }
             case 1: {//确定输入
@@ -156,6 +170,10 @@ public class MainActivity extends AppCompatActivity implements MyListener {
         }
     }
 
+    /**
+     * 更新子控件
+     * @param itemIndex
+     */
     public void updateItemView(int itemIndex){
         //得到第一个可显示控件的位置
         int visiblePosition = listView.getFirstVisiblePosition();
@@ -175,17 +193,30 @@ public class MainActivity extends AppCompatActivity implements MyListener {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            ResponseInfo responseInfo = (ResponseInfo) msg.obj;
+//            LogUtil.d("TAG",responseInfo.getStatus()+":"+responseInfo.getMessage()+":"+responseInfo.getData());
             switch (msg.what) {
                 case MyThread.RESPONSE_SUCCESS: {//操作成功
-                    goodInfoList.clear();
-                    goodListViewAdapter.notifyDataSetChanged();
-                    ToastUtil.getInstance(MainActivity.this).showShortToast(
-                            getResources().getString(R.string.handle_success));
+                    if(getResources().getString(R.string.data_isempty)
+                            .equals(responseInfo.getMessage())){//数据为空!
+                        Bundle bundle = new Bundle();
+                        bundle.putString("barCodeTxt", barCodeTxt);
+                        inputDialog = new InputDialog();
+                        inputDialog.setCancelable(false);
+                        inputDialog.setArguments(bundle);
+                        inputDialog.show(getSupportFragmentManager(), "input_dialog");
+                        editText.setText("");
+                    }else{//数据发送成功
+                        goodInfoList.clear();
+                        goodListViewAdapter.notifyDataSetChanged();
+                        ToastUtil.getInstance(MainActivity.this).showShortToast(
+                                getResources().getString(R.string.handle_success));
+                    }
                     break;
                 }
                 case MyThread.RESPONSE_FAILED:{//操作失败
-                    ToastUtil.getInstance(MainActivity.this).showShortToast(
-                            getResources().getString(R.string.handle_failed));
+                    editText.setText("");
+                    ToastUtil.getInstance(mContext).showShortToast(responseInfo.getMessage());
                 }
             }
         }

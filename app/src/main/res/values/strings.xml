@@ -16,4 +16,5 @@
     <string name="login_isEmpty">用户名或密码或IP不能为空</string>
     <string name="handle_success">操作成功</string>
     <string name="handle_failed">操作失败</string>
+    <string name="data_isempty">数据为空!</string>
 </resources>
