@@ -1,5 +1,7 @@
 package com.hasee.rbwapplication.util;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSONObject;
 import com.hasee.rbwapplication.App;
 import com.hasee.rbwapplication.bean.ResponseInfo;
@@ -17,12 +19,22 @@ import cz.msebera.android.httpclient.util.EntityUtils;
  */
 public class HttpRequestClient {
     /*服务器默认信息*/
-    private static String ipAddress = "192.168.1.126";
-    private static String port = "8080";
+    private static String ipAddress = "192.168.1.115";
+    private static String port = "8089";
     private static String projectName = "RuiBangWuLiu";
     private static String baseUrl = "http://"+ipAddress+":"+port+"/"+projectName+"/";
     //HttpClient实例
     private static HttpClient client = null;
+
+    /**
+     * 更新服务器信息
+     * @param ipAddress
+     */
+    public static void refresh(String ipAddress,String userName,String passWord) {
+        baseUrl = "http://"+ipAddress+":"+port+"/"+projectName+"/";
+        App.getInstance().setPreferences(ipAddress,userName,passWord);
+    }
+
 
     /**
      * 单例模式保持session会话
@@ -44,7 +56,7 @@ public class HttpRequestClient {
     public static ResponseInfo getData(JSONObject jsonObject, String action){
         HttpClient client = getClient();
         HttpPost post = null;
-
+        Log.d("net", "getData: "+baseUrl+action);
         try {
             post = new HttpPost(baseUrl+action);
             StringEntity entity = new StringEntity(jsonObject.toString(),"utf-8");
@@ -56,14 +68,11 @@ public class HttpRequestClient {
             ResponseInfo response = JSONObject.parseObject(result,ResponseInfo.class);
             return response;
         }catch (Exception e){
-
+            e.printStackTrace();
+        }finally {
+            post.releaseConnection();
         }
         return null;
     }
 
-    public static void refresh(String ipAddress) {
-        ipAddress = ipAddress;
-        baseUrl = "http://"+ipAddress+":"+port+"/"+projectName+"/";
-        App.getInstance().setPreferences(ipAddress);
-    }
 }

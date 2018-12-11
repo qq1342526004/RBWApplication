@@ -16,7 +16,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.hasee.rbwapplication.MyListener;
 import com.hasee.rbwapplication.R;
 import com.hasee.rbwapplication.bean.GoodInfo;
-import com.hasee.rbwapplication.util.HandlerData;
 
 
 public class UpdateDialog extends DialogFragment {
@@ -46,9 +45,12 @@ public class UpdateDialog extends DialogFragment {
         backTextView.setOnClickListener(onClickListener);
         submitTextView = (TextView)view.findViewById(R.id.updateDialog_submit_tv);
         submitTextView.setOnClickListener(onClickListener);
-        barCodeEt.setText(preGoodInfo.getBarCode());
-        xiangShuEt.setText(preGoodInfo.getXiangShu());
-        jianShuEt.setText(preGoodInfo.getJianShu());
+//        barCodeEt.setText(preGoodInfo.getBarCode());
+//        xiangShuEt.setText(preGoodInfo.getXiangShu());
+//        jianShuEt.setText(preGoodInfo.getJianShu());
+        barCodeEt.setText(preGoodInfo.getInboundBarCode());
+        xiangShuEt.setText(preGoodInfo.getInventoryBoxAmount());
+        jianShuEt.setText(preGoodInfo.getInventorySparePartAmount());
         return view;
     }
 

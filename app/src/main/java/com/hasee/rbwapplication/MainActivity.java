@@ -3,9 +3,9 @@ package com.hasee.rbwapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +22,6 @@ import com.hasee.rbwapplication.dialog.InputDialog;
 import com.hasee.rbwapplication.dialog.UpdateDialog;
 import com.hasee.rbwapplication.util.ActivityCollector;
 import com.hasee.rbwapplication.util.HandlerData;
-import com.hasee.rbwapplication.util.LogUtil;
 import com.hasee.rbwapplication.util.MyHandler;
 import com.hasee.rbwapplication.util.MyThread;
 import com.hasee.rbwapplication.util.ToastUtil;
@@ -80,15 +79,19 @@ public class MainActivity extends BaseActivity implements MyListener {
                     if (goodInfoList.size() > 0) {
                         JSONArray jsonArray = new JSONArray();
                         for (int i = 0; i < goodInfoList.size(); i++) {
-                            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(goodInfoList.get(i));
+                            GoodInfo goodInfo = goodInfoList.get(i);
+                            goodInfo.setInventoryStaffer(App.getInstance().getPreferences()[1].trim());
+                            goodInfo.setWareHouseInventoryInfoRemark("APP操作入库");
+                            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(goodInfo);
                             jsonArray.add(jsonObject);
                         }
+//                        Log.d(TAG, "onClick: "+jsonArray.toJSONString());
                         HandlerData.send(handler, jsonArray);
                     }
                     break;
                 case R.id.mainactivity_chayibiao_button://差异表按钮
-                    Intent intent = new Intent(MainActivity.this, DifferenceActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(MainActivity.this, DifferenceActivity.class);
+//                    startActivity(intent);
                     break;
             }
         }
@@ -120,7 +123,7 @@ public class MainActivity extends BaseActivity implements MyListener {
                 if(!TextUtils.isEmpty(barCodeTxt)){
                     JSONObject itemObject = new JSONObject();
                     if(!TextUtils.isEmpty(barCodeTxt)){
-                        itemObject.put("barCode",barCodeTxt);
+                        itemObject.put("inboundBarCode",barCodeTxt);
                     }
                     HandlerData.querySingle(handler,itemObject);
                 }
@@ -152,7 +155,9 @@ public class MainActivity extends BaseActivity implements MyListener {
             }
             case 1: {//确定输入
                 String goodItem = jsonArray.getString(1);
+                Log.d(TAG, "sendMessage: "+goodItem);
                 GoodInfo goodInfo = JSONObject.parseObject(goodItem, GoodInfo.class);
+                Log.d(TAG, "sendMessage: "+goodInfo.getInboundBarCode()+":"+goodInfo.getInventoryBoxAmount());
                 goodInfoList.add(goodInfo);
                 goodListViewAdapter.notifyDataSetChanged();
                 inputDialog.dismiss();

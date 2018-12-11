@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RBWApplication</string>
+    <string name="app_name">RBW1</string>
     <string name="tv_barCode">条码</string>
     <string name="tvbutton_save">保存</string>
     <string name="tvbutton_chayibiao">差异表</string>

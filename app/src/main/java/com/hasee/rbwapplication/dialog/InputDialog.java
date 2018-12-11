@@ -60,8 +60,8 @@ public class InputDialog extends DialogFragment {
                         jsonArray = new JSONArray();
                         jsonArray.add(1);//输入确定命令
                         jsonArray.add(HandlerData.addData(barCodeEt.getText().toString(),
-                                xiangShuEt.getText().toString(),
-                                jianShuEt.getText().toString()));
+                                Integer.parseInt(xiangShuEt.getText().toString()),
+                                Integer.parseInt(jianShuEt.getText().toString())));
                         listener.sendMessage(jsonArray.toString());
                     }
                     break;

@@ -61,9 +61,12 @@ public class GoodListViewAdapter extends BaseAdapter {
         }else{
             viewHolder.itemLayout.setBackgroundResource(R.color.evenNumber_bg);
         }
-        viewHolder.barCodeTv.setText(goodInfoList.get(position).getBarCode());
-        viewHolder.xiangShuTv.setText(goodInfoList.get(position).getXiangShu());
-        viewHolder.jianShuTv.setText(goodInfoList.get(position).getJianShu());
+//        viewHolder.barCodeTv.setText(goodInfoList.get(position).getBarCode());
+//        viewHolder.xiangShuTv.setText(goodInfoList.get(position).getXiangShu());
+//        viewHolder.jianShuTv.setText(goodInfoList.get(position).getJianShu());
+        viewHolder.barCodeTv.setText(goodInfoList.get(position).getInboundBarCode());
+        viewHolder.xiangShuTv.setText(String.valueOf(goodInfoList.get(position).getInventoryBoxAmount()));
+        viewHolder.jianShuTv.setText(String.valueOf(goodInfoList.get(position).getInventorySparePartAmount()));
         return view;
     }
 
@@ -85,11 +88,15 @@ public class GoodListViewAdapter extends BaseAdapter {
         }
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.barCodeTv = (TextView)view.findViewById(R.id.good_listView_item_barCode_tv);
-        viewHolder.barCodeTv.setText(goodInfoList.get(itemIndex).getBarCode());
+//        viewHolder.barCodeTv.setText(goodInfoList.get(itemIndex).getBarCode());
         viewHolder.xiangShuTv = (TextView)view.findViewById(R.id.good_listView_item_xiangShu_tv);
-        viewHolder.xiangShuTv.setText(goodInfoList.get(itemIndex).getXiangShu());
+//        viewHolder.xiangShuTv.setText(goodInfoList.get(itemIndex).getXiangShu());
         viewHolder.jianShuTv = (TextView)view.findViewById(R.id.good_listView_item_jianShu_tv);
-        viewHolder.jianShuTv.setText(goodInfoList.get(itemIndex).getJianShu());
+//        viewHolder.jianShuTv.setText(goodInfoList.get(itemIndex).getJianShu());
+
+        viewHolder.barCodeTv.setText(goodInfoList.get(itemIndex).getInboundBarCode());
+        viewHolder.xiangShuTv.setText(String.valueOf(goodInfoList.get(itemIndex).getInventoryBoxAmount()));
+        viewHolder.jianShuTv.setText(String.valueOf(goodInfoList.get(itemIndex).getInventorySparePartAmount()));
     }
 
 }

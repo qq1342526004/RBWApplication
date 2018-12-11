@@ -19,17 +19,22 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        preferences = getSharedPreferences("IpAddress",MODE_PRIVATE);
-        editor = getSharedPreferences("IpAddress",MODE_PRIVATE).edit();
+        preferences = getSharedPreferences("APPInfo",MODE_PRIVATE);
+        editor = getSharedPreferences("APPInfo",MODE_PRIVATE).edit();
     }
 
-    public String getPreferences() {
-        String ipAddress = preferences.getString("IpAddress","");
-        return ipAddress;
+    public String[] getPreferences() {
+        String ipAddress = preferences.getString("ipAddress","");
+        String userName = preferences.getString("userName","");
+        String passWord = preferences.getString("passWord","");
+        String[] strings = new String[]{ipAddress,userName,passWord};
+        return strings;
     }
 
-    public void setPreferences(String ipAddress){
-        editor.putString("IpAddress",ipAddress);
+    public void setPreferences(String ipAddress,String userName,String passWord){
+        editor.putString("ipAddress",ipAddress);
+        editor.putString("userName",userName);
+        editor.putString("passWord",passWord);
         editor.apply();
     }
 

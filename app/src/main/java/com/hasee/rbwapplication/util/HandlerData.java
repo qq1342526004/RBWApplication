@@ -6,10 +6,13 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * Created by fangju on 2018/11/21
- * Email:1342526004@qq.com
  */
 public class HandlerData {
+//    private static String action = "app.do";
     private static String action = "action.do";
+    private static String app_handle_module = "APP库房盘点操作";
+    private static String login_module = "userLogin";
+
     /**
      * 登陆时的数据
      * @param userName
@@ -18,8 +21,9 @@ public class HandlerData {
      */
     public static void login(MyHandler handler, String userName, String passWord){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("module","userLogin");
+        jsonObject.put("module",login_module);
         jsonObject.put("operation","employeeLogin");
+//        jsonObject.put("loginType","employeeLogin");
         jsonObject.put("type","app");
         jsonObject.put("username",userName);
         jsonObject.put("password",passWord);
@@ -33,31 +37,31 @@ public class HandlerData {
      */
     public static void send(MyHandler handler, JSONArray jsonArray){
         JSONObject jsonObject = new JSONObject();//发送给服务器的数据
-        jsonObject.put("module", "test");
-        jsonObject.put("operation", "submit");
+        jsonObject.put("module", app_handle_module);
+        jsonObject.put("operation", "InventoryDataSubmit");//盘点数据提交
         jsonObject.put("type", "app");
         jsonObject.put("datas", jsonArray);
         new MyThread(handler, jsonObject, action).start();
     }
 
     /**
-     * 查询所有数据
+     * 查询差异表
      */
     public static void queryAll(MyHandler handler){
         JSONObject jsonObject = new JSONObject();//发送给服务器的数据
-        jsonObject.put("module", "test");
-        jsonObject.put("operation", "query");
+        jsonObject.put("module", app_handle_module);
+        jsonObject.put("operation", "ZSCYDataView");//差异表
         jsonObject.put("type", "app");
         new MyThread(handler,jsonObject,action).start();
     }
 
     /**
-     * 查询单个 数据
+     * 查询入库条码
      */
     public static void querySingle(MyHandler handler, JSONObject itemObject){
         JSONObject jsonObject = new JSONObject();//发送给服务器的数据
-        jsonObject.put("module", "test");
-        jsonObject.put("operation", "bartest");
+        jsonObject.put("module", app_handle_module);
+        jsonObject.put("operation", "OLDBarCodeQuery");//查询入库条码
         jsonObject.put("type", "app");
         jsonObject.put("rely",itemObject);
         new MyThread(handler,jsonObject,action).start();
@@ -70,7 +74,7 @@ public class HandlerData {
      */
     public static JSONObject updateData(JSONArray jsonArray){
         JSONObject jsonObject = new JSONObject();//发送给服务器的数据
-        jsonObject.put("module", "test");
+        jsonObject.put("module", app_handle_module);
         jsonObject.put("operation", "update");
         jsonObject.put("type", "app");
         jsonObject.put("datas",jsonArray);
@@ -84,11 +88,14 @@ public class HandlerData {
      * @param jianShu
      * @return
      */
-    public static String addData(String barCode, String xiangShu, String jianShu){
+    public static String addData(String barCode, int xiangShu, int jianShu){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("barCode",barCode);
-        jsonObject.put("xiangShu",xiangShu);
-        jsonObject.put("jianShu",jianShu);
+//        jsonObject.put("barCode",barCode);
+//        jsonObject.put("xiangShu",xiangShu);
+//        jsonObject.put("jianShu",jianShu);
+        jsonObject.put("inboundBarCode",barCode);
+        jsonObject.put("inventoryBoxAmount",xiangShu);
+        jsonObject.put("inventorySparePartAmount",jianShu);
         return jsonObject.toString();
     }
 }

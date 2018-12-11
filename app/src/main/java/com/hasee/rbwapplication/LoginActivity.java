@@ -39,11 +39,11 @@ public class LoginActivity extends BaseActivity {
         userNameEt = (EditText)findViewById(R.id.loginLayout_userName_et);
         passWordEt = (EditText)findViewById(R.id.loginLayout_passWord_et);
         //默认账号
-        userNameEt.setText("123");
-        passWordEt.setText("1");
+        userNameEt.setText(App.getInstance().getPreferences()[1].trim());
+        passWordEt.setText(App.getInstance().getPreferences()[2].trim());
 
         ipAddressEt = (EditText)findViewById(R.id.loginLayout_ipAddress_et);
-        ipAddressEt.setText(App.getInstance().getPreferences().trim());
+        ipAddressEt.setText(App.getInstance().getPreferences()[0].trim());
         loginButton = (Button)findViewById(R.id.loginLayout_login_button);
         loginButton.setOnClickListener(onClickListener);
     }
@@ -62,7 +62,7 @@ public class LoginActivity extends BaseActivity {
                         String userName = userNameEt.getText().toString().trim();
                         String passWord = passWordEt.getText().toString().trim();
                         String ipAddress = ipAddressEt.getText().toString().trim();
-                        HttpRequestClient.refresh(ipAddress);//更新ip地址
+                        HttpRequestClient.refresh(ipAddress,userName,passWord);//更新ip地址
                         HandlerData.login(handler,userName,passWord);
                     }else{
                         ToastUtil.getInstance(mContext).showShortToast(getResources().getString(R.string.login_isEmpty));
